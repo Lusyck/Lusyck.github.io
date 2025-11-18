@@ -265,6 +265,120 @@
     .error-message.show {
       display: block;
     }
+    /* Chatbot */
+    .chat-button {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: #333333;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      z-index: 9999;
+    }
+
+    .chat-panel {
+      position: fixed;
+      right: 20px;
+      bottom: 90px;
+      width: 320px;
+      max-height: 420px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+      overflow: hidden;
+      display: none;
+      flex-direction: column;
+      z-index: 9999;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .chat-header {
+      background: #333333;
+      color: #fff;
+      padding: 12px 14px;
+      font-weight: bold;
+    }
+
+    .chat-messages {
+      padding: 12px;
+      overflow-y: auto;
+      flex: 1 1 auto;
+    }
+
+    .chat-input-area {
+      padding: 10px;
+      border-top: 1px solid #eee;
+      display: flex;
+      gap: 8px;
+    }
+
+    .chat-input {
+      flex: 1 1 auto;
+      padding: 8px 10px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    .chat-send {
+      background: #333333;
+      color: #fff;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .message {
+      margin-bottom: 10px;
+      display: block;
+      font-size: 14px;
+    }
+
+    .message.user {
+      text-align: right;
+      color: #fff;
+    }
+
+    .bubble {
+      display: inline-block;
+      padding: 8px 12px;
+      border-radius: 16px;
+      max-width: 85%;
+    }
+
+    .bubble.user {
+      background: #333333;
+      color: #fff;
+    }
+
+    .bubble.bot {
+      background: #f1f1f1;
+      color: #333333;
+    }
+
+    .quick-buttons {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .quick-buttons button {
+      background: #f4f4f4;
+      border: 1px solid #e0e0e0;
+      padding: 6px 8px;
+      border-radius: 6px;
+      font-size: 13px;
+      cursor: pointer;
+    }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 </head>
@@ -446,6 +560,29 @@
     <p>&copy; 2025 Barbearia Pai e Filho. Todos os direitos reservados.</p>
   </footer>
   
+  <!-- Chatbot UI -->
+  <div class="chat-panel" id="chatPanel" aria-hidden="true">
+    <div class="chat-header">Chat — Barbearia Pai e Filho</div>
+    <div class="chat-messages" id="chatMessages">
+      <div class="message bot">
+        <span class="bubble bot">Olá! Posso informar preços de cortes e nosso horário de funcionamento. Pergunte algo como "preços" ou "horário".</span>
+      </div>
+      <div class="quick-buttons" id="quickButtons">
+        <button data-msg="Quais os preços dos cortes?">Preços</button>
+        <button data-msg="Qual o horário de funcionamento?">Horário</button>
+        <button data-msg="Quanto custa um corte clássico?">Corte clássico</button>
+      </div>
+    </div>
+    <div class="chat-input-area">
+      <input id="chatInput" class="chat-input" placeholder="Digite sua pergunta..." aria-label="Pergunta" />
+      <button id="chatSend" class="chat-send">Enviar</button>
+    </div>
+  </div>
+
+  <div class="chat-button" id="chatButton" title="Abrir chat">
+    💬
+  </div>
+
   <script>
     // ========== CONFIGURAÇÃO DO EMAILJS ==========
     // Substitua com suas credenciais reais do EmailJS
@@ -516,7 +653,7 @@
             throw new Error('Por favor, insira um email válido.');
           }
 
-          // IMPORTANTE: Descomente esta linha após configurar suas credenciais reais do EmailJS
+          
           await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, formData);
 
           // Para demonstração, simular envio bem-sucedido após 1 segundo
@@ -590,6 +727,109 @@
         showImage(currentIndex);
       });
     });
+  
+    // ========= Chatbot: knowledge base + TTS =========
+    (function(){
+      const kb = {
+        preco_geral: 'Nossos preços: Corte — R$ 25,00; Barba — R$ 20,00.',
+        corte_classico: 'Corte: R$ 25,00 — atendimento padrão.',
+        corte_moderno: 'Corte: R$ 25,00 — atendimento padrão.',
+        barba: 'Barba: R$ 20,00 — limpeza, contorno e finalização.',
+        horario: 'Funcionamos de terça a sábado, das 09:00 às 19:00. Domingos e segundas fechados.'
+      };
+
+      const chatButton = document.getElementById('chatButton');
+      const chatPanel = document.getElementById('chatPanel');
+      const chatMessages = document.getElementById('chatMessages');
+      const chatInput = document.getElementById('chatInput');
+      const chatSend = document.getElementById('chatSend');
+      const quickButtons = document.getElementById('quickButtons');
+
+      let ttsEnabled = true;
+
+      function speak(text){
+        if (!ttsEnabled) return;
+        try{
+          const uttr = new SpeechSynthesisUtterance(text);
+          uttr.lang = 'pt-BR';
+          window.speechSynthesis.cancel();
+          window.speechSynthesis.speak(uttr);
+        }catch(e){
+          console.warn('TTS não disponível:', e);
+        }
+      }
+
+      function appendMessage(text, from='bot'){
+        const msg = document.createElement('div');
+        msg.className = 'message ' + (from === 'user' ? 'user' : 'bot');
+        const bubble = document.createElement('span');
+        bubble.className = 'bubble ' + (from === 'user' ? 'user' : 'bot');
+        bubble.textContent = text;
+        msg.appendChild(bubble);
+        chatMessages.appendChild(msg);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        if (from === 'bot'){
+          // Não falar respostas redundantes sobre cortes individuais
+          const noTTS = [kb.corte_classico, kb.corte_moderno];
+          if (!noTTS.includes(text)) speak(text);
+        }
+      }
+
+      function handleQuery(raw){
+        const q = raw.toLowerCase();
+        // simples mapeamento por palavras-chave
+        if (q.includes('preço') || q.includes('precos') || q.includes('valores') || q.includes('preços')){
+          return kb.preco_geral;
+        }
+        if (q.includes('clássico') || q.includes('classico')) return kb.corte_classico;
+        if (q.includes('moderno')) return kb.corte_moderno;
+        if (q.includes('barba')) return kb.barba;
+        if (q.includes('horário') || q.includes('horario') || q.includes('funcionamento') || q.includes('horas')) return kb.horario;
+        // fallback
+        return 'Desculpe, não entendi. Posso informar preços dos cortes e nosso horário de funcionamento. Pergunte por "preços" ou "horário".';
+      }
+
+      chatButton.addEventListener('click', ()=>{
+        const open = chatPanel.style.display === 'flex';
+        chatPanel.style.display = open ? 'none' : 'flex';
+        chatPanel.setAttribute('aria-hidden', open ? 'true' : 'false');
+        if (!open) chatInput.focus();
+      });
+
+      chatSend.addEventListener('click', ()=>{
+        const text = chatInput.value.trim();
+        if (!text) return;
+        appendMessage(text, 'user');
+        chatInput.value = '';
+        setTimeout(()=>{
+          const resp = handleQuery(text);
+          appendMessage(resp, 'bot');
+        }, 300);
+      });
+
+      chatInput.addEventListener('keydown', (e)=>{
+        if (e.key === 'Enter') { chatSend.click(); }
+      });
+
+      quickButtons.addEventListener('click', (e)=>{
+        if (e.target.tagName === 'BUTTON'){
+          const txt = e.target.getAttribute('data-msg');
+          appendMessage(txt, 'user');
+          setTimeout(()=>{
+            const resp = handleQuery(txt);
+            appendMessage(resp, 'bot');
+          }, 250);
+        }
+      });
+
+      // small control: click bot header to toggle TTS
+      document.querySelector('.chat-header').addEventListener('click', ()=>{
+        ttsEnabled = !ttsEnabled;
+        const notice = ttsEnabled ? 'TTS ativado' : 'TTS desativado';
+        appendMessage(notice, 'bot');
+      });
+
+    })();
   </script>
 </body>
 </html>
