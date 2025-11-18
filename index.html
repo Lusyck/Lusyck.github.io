@@ -570,7 +570,6 @@
       <div class="quick-buttons" id="quickButtons">
         <button data-msg="Quais os preços dos cortes?">Preços</button>
         <button data-msg="Qual o horário de funcionamento?">Horário</button>
-        <button data-msg="Quanto custa um corte clássico?">Corte clássico</button>
       </div>
     </div>
     <div class="chat-input-area">
@@ -730,15 +729,10 @@
   
     // ========= Chatbot: knowledge base + TTS =========
     (function(){
-      const kb = {
-        preco_geral: 'Nossos preços: Corte — R$ 25,00; Barba — R$ 20,00.',
-        corte_classico: 'Corte: R$ 25,00 — atendimento padrão.',
-        corte_moderno: 'Corte: R$ 25,00 — atendimento padrão.',
-        barba: 'Barba: R$ 20,00 — limpeza, contorno e finalização.',
-        horario: 'Funcionamos de terça a sábado, das 09:00 às 19:00. Domingos e segundas fechados.'
-      };
-
-      const chatButton = document.getElementById('chatButton');
+    const kb = {
+      preco_geral: 'Cortes = 20 reais\nFades = 25 reais\nBarba = 20 reais\nCabelo e Barba = 40 reais\nSobrancelha = 5 reais',
+      horario: 'Segunda a Sexta das 8h00 às 19h00, Sábado das 6h30 às 18h30'
+    };      const chatButton = document.getElementById('chatButton');
       const chatPanel = document.getElementById('chatPanel');
       const chatMessages = document.getElementById('chatMessages');
       const chatInput = document.getElementById('chatInput');
@@ -768,11 +762,6 @@
         msg.appendChild(bubble);
         chatMessages.appendChild(msg);
         chatMessages.scrollTop = chatMessages.scrollHeight;
-        if (from === 'bot'){
-          // Não falar respostas redundantes sobre cortes individuais
-          const noTTS = [kb.corte_classico, kb.corte_moderno];
-          if (!noTTS.includes(text)) speak(text);
-        }
       }
 
       function handleQuery(raw){
@@ -781,9 +770,7 @@
         if (q.includes('preço') || q.includes('precos') || q.includes('valores') || q.includes('preços')){
           return kb.preco_geral;
         }
-        if (q.includes('clássico') || q.includes('classico')) return kb.corte_classico;
-        if (q.includes('moderno')) return kb.corte_moderno;
-        if (q.includes('barba')) return kb.barba;
+        if (q.includes('clássico') || q.includes('classico') || q.includes('moderno') || q.includes('barba')) return kb.preco_geral;
         if (q.includes('horário') || q.includes('horario') || q.includes('funcionamento') || q.includes('horas')) return kb.horario;
         // fallback
         return 'Desculpe, não entendi. Posso informar preços dos cortes e nosso horário de funcionamento. Pergunte por "preços" ou "horário".';
