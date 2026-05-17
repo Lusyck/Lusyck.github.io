@@ -1,0 +1,1430 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- SEO -->
+  <title>Barbearia Pai e Filho | Cortes, Barba e Estilo</title>
+  <meta name="description" content="Barbearia Pai e Filho — cortes clássicos e modernos, barba, degradê e muito mais. Ambiente acolhedor, barbeiros experientes e agendamento online. Venha nos visitar!">
+  <meta name="keywords" content="barbearia, corte de cabelo, barba, degradê, fade, barbearia pai e filho">
+  <meta name="robots" content="index, follow">
+
+  <!-- Open Graph (WhatsApp / redes sociais) -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Barbearia Pai e Filho | Cortes, Barba e Estilo">
+  <meta property="og:description" content="Cortes impecáveis, barba modelada e atendimento de qualidade. Agende seu horário online!">
+  <meta property="og:image" content="ImagensBarbearia/DentroSalao2.jpg">
+  <meta property="og:locale" content="pt_BR">
+
+  <!-- Favicon inline SVG via data URI -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='12' fill='%230a0a0a'/><text y='48' x='8' font-size='48' fill='%23c9a84c'>✂</text></svg>">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- EmailJS -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
+  <style>
+    /* ============================================================
+       TOKENS
+    ============================================================ */
+    :root {
+      --black:     #0a0a0a;
+      --dark:      #111111;
+      --dark2:     #1a1a1a;
+      --dark3:     #222222;
+      --gold:      #c9a84c;
+      --gold-lt:   #e8c97a;
+      --gold-dim:  rgba(201,168,76,.15);
+      --gold-dim2: rgba(201,168,76,.08);
+      --white:     #f5f0e8;
+      --white2:    #e8e0d0;
+      --gray:      #888880;
+      --gray2:     #55554f;
+      --green:     #3ecf6e;
+      --radius:    3px;
+      --nav-h:     68px;
+    }
+
+    /* ============================================================
+       RESET & BASE
+    ============================================================ */
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior:smooth; font-size:16px; }
+    body {
+      font-family:'Outfit',sans-serif;
+      background:var(--black);
+      color:var(--white);
+      overflow-x:hidden;
+      -webkit-font-smoothing:antialiased;
+    }
+    img { display:block; max-width:100%; }
+    a { color:inherit; text-decoration:none; }
+    button { font-family:inherit; cursor:pointer; border:none; background:none; }
+
+    ::-webkit-scrollbar { width:5px; }
+    ::-webkit-scrollbar-track { background:var(--dark); }
+    ::-webkit-scrollbar-thumb { background:var(--gold); border-radius:3px; }
+
+    /* ============================================================
+       UTILITIES
+    ============================================================ */
+    .section { padding:96px 7%; }
+    .container { max-width:1200px; margin:0 auto; }
+
+    .eyebrow {
+      display:inline-flex; align-items:center; gap:10px;
+      font-size:.68rem; letter-spacing:.25em; text-transform:uppercase;
+      color:var(--gold); font-weight:500; margin-bottom:14px;
+    }
+    .eyebrow::before { content:''; width:28px; height:1px; background:var(--gold); flex-shrink:0; }
+
+    .sec-title {
+      font-family:'Playfair Display',serif;
+      font-size:clamp(1.9rem,3.8vw,3rem);
+      font-weight:900; line-height:1.12; color:var(--white);
+    }
+    .sec-title em { font-style:italic; color:var(--gold); }
+
+    .sec-desc {
+      margin-top:18px;
+      font-size:.95rem; font-weight:300; color:var(--gray);
+      line-height:1.85; max-width:520px;
+    }
+
+    .gold-bar { width:50px; height:2px; background:linear-gradient(90deg,var(--gold),transparent); margin:18px 0; }
+
+    .btn-gold {
+      display:inline-flex; align-items:center; gap:8px;
+      background:var(--gold); color:var(--black);
+      padding:13px 30px;
+      font-size:.78rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase;
+      border-radius:var(--radius);
+      transition:background .3s, transform .2s, box-shadow .3s;
+      box-shadow:0 4px 18px rgba(201,168,76,.28);
+    }
+    .btn-gold:hover { background:var(--gold-lt); transform:translateY(-2px); box-shadow:0 8px 28px rgba(201,168,76,.38); }
+
+    .btn-ghost {
+      display:inline-flex; align-items:center; gap:8px;
+      background:transparent; color:var(--white);
+      padding:12px 28px;
+      font-size:.78rem; font-weight:500; letter-spacing:.12em; text-transform:uppercase;
+      border:1px solid rgba(245,240,232,.25);
+      border-radius:var(--radius);
+      transition:border-color .3s, color .3s, transform .2s;
+    }
+    .btn-ghost:hover { border-color:var(--gold); color:var(--gold); transform:translateY(-2px); }
+
+    /* reveal animation */
+    .reveal { opacity:0; transform:translateY(28px); transition:opacity .7s ease, transform .7s ease; }
+    .reveal.visible { opacity:1; transform:translateY(0); }
+    .reveal-d1 { transition-delay:.1s; }
+    .reveal-d2 { transition-delay:.2s; }
+    .reveal-d3 { transition-delay:.3s; }
+
+    /* ============================================================
+       NAVBAR
+    ============================================================ */
+    #navbar {
+      position:fixed; inset:0 0 auto;
+      height:var(--nav-h); padding:0 7%;
+      display:flex; align-items:center; justify-content:space-between;
+      z-index:900;
+      transition:background .4s, box-shadow .4s;
+    }
+    #navbar.scrolled {
+      background:rgba(10,10,10,.96);
+      box-shadow:0 1px 0 var(--gold-dim), 0 6px 28px rgba(0,0,0,.5);
+      backdrop-filter:blur(10px);
+    }
+
+    .nav-brand { display:flex; align-items:center; gap:12px; }
+    .nav-brand-icon {
+      width:38px; height:38px; border-radius:50%;
+      border:1.5px solid var(--gold);
+      display:flex; align-items:center; justify-content:center;
+      font-size:17px; color:var(--gold); flex-shrink:0;
+    }
+    .nav-brand-name {
+      font-family:'Playfair Display',serif;
+      font-size:1rem; font-weight:700; color:var(--white); line-height:1.2;
+    }
+    .nav-brand-sub {
+      display:block;
+      font-family:'Outfit',sans-serif;
+      font-size:.6rem; font-weight:400;
+      letter-spacing:.22em; text-transform:uppercase;
+      color:var(--gold);
+    }
+
+    .nav-links { display:flex; align-items:center; gap:32px; list-style:none; }
+    .nav-links a {
+      font-size:.75rem; font-weight:500;
+      letter-spacing:.12em; text-transform:uppercase;
+      color:var(--gray);
+      position:relative; transition:color .3s;
+    }
+    .nav-links a::after {
+      content:''; position:absolute; bottom:-4px; left:0;
+      width:0; height:1px; background:var(--gold); transition:width .3s;
+    }
+    .nav-links a:hover { color:var(--gold); }
+    .nav-links a:hover::after { width:100%; }
+
+    .nav-cta {
+      background:var(--gold) !important; color:var(--black) !important;
+      padding:8px 20px; border-radius:var(--radius);
+      font-weight:700 !important;
+    }
+    .nav-cta:hover { background:var(--gold-lt) !important; }
+    .nav-cta::after { display:none !important; }
+
+    /* hamburger */
+    .ham { display:none; flex-direction:column; gap:5px; padding:4px; }
+    .ham span { display:block; width:23px; height:2px; background:var(--white); border-radius:2px; transition:all .3s; }
+    .ham.open span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
+    .ham.open span:nth-child(2) { opacity:0; }
+    .ham.open span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
+
+    /* mobile menu */
+    .nav-drawer {
+      display:none; position:fixed;
+      inset:var(--nav-h) 0 0; background:rgba(10,10,10,.98);
+      flex-direction:column; gap:0;
+      padding:0; z-index:899; overflow-y:auto;
+    }
+    .nav-drawer.open { display:flex; }
+    .nav-drawer a {
+      display:block; padding:18px 7%;
+      font-size:1.05rem; font-weight:500;
+      color:var(--white2); letter-spacing:.06em;
+      border-bottom:1px solid rgba(255,255,255,.04);
+      transition:color .3s, background .3s;
+    }
+    .nav-drawer a:hover { color:var(--gold); background:var(--gold-dim2); }
+    .nav-drawer .drawer-cta {
+      margin:24px 7%; padding:16px;
+      background:var(--gold); color:var(--black);
+      text-align:center; font-weight:700;
+      border-radius:var(--radius);
+      font-size:.85rem; letter-spacing:.1em; text-transform:uppercase;
+    }
+
+    /* ============================================================
+       HERO
+    ============================================================ */
+    #home {
+      position:relative; height:100vh; min-height:640px;
+      display:flex; align-items:center; overflow:hidden;
+    }
+    .hero-bg {
+      position:absolute; inset:0;
+      background:url('ImagensBarbearia/DentroSalao2.jpg') center/cover no-repeat;
+      filter:brightness(.28);
+      transform:scale(1.06);
+      animation:heroZoom 18s ease-in-out infinite alternate;
+    }
+    @keyframes heroZoom { from{transform:scale(1.06)} to{transform:scale(1.13)} }
+    .hero-overlay {
+      position:absolute; inset:0;
+      background:linear-gradient(130deg, rgba(0,0,0,.72) 0%, rgba(0,0,0,.22) 55%, rgba(201,168,76,.06) 100%);
+    }
+    .hero-content {
+      position:relative; z-index:2;
+      padding:0 7%; max-width:720px;
+    }
+    .hero-badge {
+      display:inline-flex; align-items:center; gap:10px;
+      background:var(--gold-dim); border:1px solid rgba(201,168,76,.3);
+      padding:6px 16px; border-radius:var(--radius); margin-bottom:24px;
+      animation:fadeUp .8s ease both;
+    }
+    .hero-badge span { font-size:.68rem; letter-spacing:.2em; text-transform:uppercase; color:var(--gold); font-weight:500; }
+    .hero-badge::before { content:''; width:18px; height:1px; background:var(--gold); }
+
+    .hero-title {
+      font-family:'Playfair Display',serif;
+      font-size:clamp(2.6rem,5.8vw,5rem);
+      font-weight:900; line-height:1.06; color:var(--white);
+      margin-bottom:22px;
+      animation:fadeUp .8s .12s ease both;
+    }
+    .hero-title em { font-style:italic; color:var(--gold); }
+
+    .hero-sub {
+      font-size:clamp(.9rem,1.4vw,1.05rem);
+      font-weight:300; color:var(--white2); line-height:1.85;
+      max-width:480px; margin-bottom:38px;
+      animation:fadeUp .8s .24s ease both;
+    }
+    .hero-actions {
+      display:flex; gap:14px; flex-wrap:wrap;
+      animation:fadeUp .8s .36s ease both;
+    }
+    .hero-scroll-hint {
+      position:absolute; bottom:36px; left:7%; z-index:2;
+      display:flex; align-items:center; gap:10px;
+      animation:fadeUp .8s .6s ease both;
+    }
+    .hero-scroll-hint::before { content:''; width:42px; height:1px; background:var(--gold); }
+    .hero-scroll-hint span { font-size:.65rem; letter-spacing:.2em; text-transform:uppercase; color:var(--gray); }
+
+    .hero-stats {
+      position:absolute; bottom:36px; right:7%; z-index:2;
+      display:flex; gap:36px;
+      animation:fadeUp .8s .52s ease both;
+    }
+    .h-stat { text-align:center; }
+    .h-stat-n {
+      font-family:'Playfair Display',serif;
+      font-size:1.9rem; font-weight:900; color:var(--gold); line-height:1;
+    }
+    .h-stat-l { font-size:.62rem; letter-spacing:.15em; text-transform:uppercase; color:var(--gray); margin-top:3px; }
+
+    @keyframes fadeUp { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:translateY(0)} }
+
+    /* ============================================================
+       SOBRE
+    ============================================================ */
+    #sobre { background:var(--dark); }
+    .sobre-grid { display:grid; grid-template-columns:1fr 1fr; gap:72px; align-items:center; }
+
+    .sobre-imgs { position:relative; }
+    .sobre-main { width:100%; aspect-ratio:4/5; object-fit:cover; border-radius:var(--radius); }
+    .sobre-accent {
+      position:absolute; bottom:-28px; right:-28px;
+      width:52%; aspect-ratio:1; object-fit:cover;
+      border:4px solid var(--dark); border-radius:var(--radius);
+    }
+    .sobre-badge-box {
+      position:absolute; top:28px; left:-18px;
+      background:var(--gold); color:var(--black);
+      padding:14px 18px; text-align:center;
+      border-radius:var(--radius);
+      box-shadow:0 8px 28px rgba(0,0,0,.45);
+    }
+    .sobre-badge-n { font-family:'Playfair Display',serif; font-size:1.8rem; font-weight:900; line-height:1; }
+    .sobre-badge-t { font-size:.62rem; letter-spacing:.1em; text-transform:uppercase; font-weight:700; line-height:1.4; margin-top:3px; }
+
+    .sobre-feats { display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-top:32px; }
+    .feat { display:flex; gap:12px; align-items:flex-start; }
+    .feat-icon {
+      width:34px; height:34px; flex-shrink:0; margin-top:2px;
+      background:var(--gold-dim); border:1px solid rgba(201,168,76,.2);
+      border-radius:var(--radius);
+      display:flex; align-items:center; justify-content:center; font-size:15px;
+    }
+    .feat h4 { font-size:.82rem; font-weight:600; color:var(--white); margin-bottom:3px; }
+    .feat p  { font-size:.76rem; color:var(--gray); line-height:1.55; }
+
+    /* ============================================================
+       SERVIÇOS
+    ============================================================ */
+    #servicos { background:var(--black); position:relative; overflow:hidden; }
+    #servicos::before {
+      content:'SERVIÇOS'; position:absolute; top:50%; left:50%;
+      transform:translate(-50%,-50%);
+      font-family:'Playfair Display',serif; font-size:17vw; font-weight:900;
+      color:rgba(255,255,255,.016); white-space:nowrap; pointer-events:none; letter-spacing:-.04em;
+    }
+
+    .serv-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:2px; }
+
+    .serv-card {
+      background:var(--dark2); padding:40px 32px;
+      position:relative; overflow:hidden;
+      transition:background .35s;
+      opacity:0; transform:translateY(28px);
+    }
+    .serv-card.visible {
+      opacity:1; transform:translateY(0);
+      transition:opacity .65s ease, transform .65s ease, background .35s;
+    }
+    .serv-card:nth-child(2){transition-delay:.09s}
+    .serv-card:nth-child(3){transition-delay:.18s}
+    .serv-card:nth-child(4){transition-delay:.27s}
+    .serv-card:nth-child(5){transition-delay:.36s}
+    .serv-card::after {
+      content:''; position:absolute; bottom:0; left:0;
+      width:0; height:2px; background:var(--gold); transition:width .4s;
+    }
+    .serv-card:hover { background:var(--dark3); }
+    .serv-card:hover::after { width:100%; }
+
+    .serv-num {
+      font-family:'Playfair Display',serif; font-size:2.8rem; font-weight:900;
+      color:rgba(201,168,76,.1); line-height:1; margin-bottom:16px; transition:color .3s;
+    }
+    .serv-card:hover .serv-num { color:rgba(201,168,76,.18); }
+    .serv-ico { font-size:1.7rem; margin-bottom:14px; }
+    .serv-name { font-family:'Playfair Display',serif; font-size:1.3rem; font-weight:700; color:var(--white); margin-bottom:10px; }
+    .serv-desc { font-size:.82rem; color:var(--gray); line-height:1.72; margin-bottom:22px; }
+    .serv-price { display:flex; align-items:baseline; gap:5px; }
+    .serv-from { font-size:.62rem; text-transform:uppercase; letter-spacing:.1em; color:var(--gray2); }
+    .serv-val  { font-family:'Playfair Display',serif; font-size:1.5rem; font-weight:700; color:var(--gold); }
+
+    .serv-cta-card {
+      background:var(--gold-dim); border:1px solid rgba(201,168,76,.15);
+      display:flex; align-items:center; justify-content:center; text-align:center;
+      padding:40px 28px;
+    }
+
+    /* ============================================================
+       GALERIA
+    ============================================================ */
+    #salao { background:var(--dark); }
+
+    .gal-layout { display:grid; grid-template-columns:1.15fr 1fr; gap:20px; }
+    .gal-col { display:flex; flex-direction:column; gap:20px; }
+
+    .car-wrap { position:relative; overflow:hidden; border-radius:var(--radius); }
+    .car-label {
+      position:absolute; top:16px; left:16px; z-index:5;
+      background:rgba(0,0,0,.72); border:1px solid rgba(201,168,76,.3);
+      padding:5px 13px; font-size:.62rem; letter-spacing:.18em; text-transform:uppercase;
+      color:var(--gold); border-radius:1px;
+    }
+    .carousel { position:relative; overflow:hidden; }
+    .car-track { display:flex; transition:transform .58s cubic-bezier(.4,0,.2,1); }
+    .car-track img { min-width:100%; width:100%; object-fit:cover; }
+    .car-main .car-track img { height:460px; }
+    .car-side .car-track img { height:320px; }
+
+    .car-ctrls { position:absolute; bottom:16px; right:16px; display:flex; gap:7px; z-index:5; }
+    .car-btn {
+      width:38px; height:38px;
+      background:rgba(10,10,10,.82); border:1px solid rgba(201,168,76,.3);
+      color:var(--white); font-size:13px; border-radius:1px;
+      display:flex; align-items:center; justify-content:center;
+      transition:background .3s, border-color .3s, color .3s;
+    }
+    .car-btn:hover { background:var(--gold); border-color:var(--gold); color:var(--black); }
+
+    .car-dots { position:absolute; bottom:18px; left:16px; display:flex; gap:5px; z-index:5; }
+    .car-dot {
+      width:5px; height:5px; border-radius:50%;
+      background:rgba(255,255,255,.28); cursor:pointer;
+      transition:background .3s, transform .3s;
+    }
+    .car-dot.on { background:var(--gold); transform:scale(1.35); }
+
+    .gal-info {
+      background:var(--dark2); border:1px solid rgba(255,255,255,.04);
+      padding:24px 28px; border-radius:var(--radius);
+      display:flex; align-items:center; gap:18px;
+    }
+    .gal-info-ico { font-size:1.8rem; }
+    .gal-info-title { font-family:'Playfair Display',serif; font-size:1rem; color:var(--white); margin-bottom:5px; }
+    .gal-info-text  { font-size:.8rem; color:var(--gray); line-height:1.6; }
+
+    /* ============================================================
+       DEPOIMENTOS
+    ============================================================ */
+    #depoimentos { background:var(--black); }
+    .dep-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+    .dep-card {
+      background:var(--dark2); border:1px solid rgba(255,255,255,.04);
+      padding:32px 28px; border-radius:var(--radius);
+      transition:border-color .3s, transform .3s;
+    }
+    .dep-card:hover { border-color:rgba(201,168,76,.2); transform:translateY(-4px); }
+    .dep-stars { color:var(--gold); font-size:1rem; letter-spacing:2px; margin-bottom:16px; }
+    .dep-text { font-size:.88rem; color:var(--white2); line-height:1.75; font-style:italic; margin-bottom:20px; }
+    .dep-author { display:flex; align-items:center; gap:12px; }
+    .dep-avatar {
+      width:40px; height:40px; border-radius:50%;
+      background:var(--gold-dim); border:1px solid rgba(201,168,76,.3);
+      display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0;
+    }
+    .dep-name { font-size:.82rem; font-weight:600; color:var(--white); }
+    .dep-since{ font-size:.7rem; color:var(--gray); }
+
+    .dep-google {
+      display:flex; align-items:center; justify-content:center; gap:12px;
+      margin-top:40px; padding:18px 28px;
+      background:var(--dark2); border:1px solid rgba(255,255,255,.06);
+      border-radius:var(--radius);
+    }
+    .dep-google-logo { font-size:1.4rem; }
+    .dep-google-text { font-size:.82rem; color:var(--gray); }
+    .dep-google-text strong { color:var(--white); }
+    .dep-google-stars { color:var(--gold); font-size:.9rem; }
+
+    /* ============================================================
+       HORÁRIOS
+    ============================================================ */
+    #horario { background:var(--dark); }
+    .hor-grid { display:grid; grid-template-columns:1fr 1fr; gap:72px; align-items:start; }
+
+    .hor-table { background:var(--dark2); border:1px solid rgba(201,168,76,.08); border-radius:var(--radius); overflow:hidden; }
+    .hor-row {
+      display:flex; justify-content:space-between; align-items:center;
+      padding:15px 26px; border-bottom:1px solid rgba(255,255,255,.04);
+      transition:background .2s;
+    }
+    .hor-row:last-child { border-bottom:none; }
+    .hor-row:hover { background:rgba(255,255,255,.02); }
+    .hor-row.sat { background:var(--gold-dim); }
+    .hor-day  { font-size:.84rem; font-weight:500; color:var(--white2); }
+    .hor-time { font-size:.8rem; color:var(--gold); font-weight:500; }
+    .hor-closed{ font-size:.8rem; color:var(--gray2); }
+
+    .hor-info { display:flex; flex-direction:column; gap:24px; }
+    .hor-item { display:flex; gap:18px; align-items:flex-start; }
+    .hor-item-ico {
+      width:46px; height:46px; flex-shrink:0;
+      background:var(--gold-dim); border:1px solid rgba(201,168,76,.2);
+      border-radius:var(--radius);
+      display:flex; align-items:center; justify-content:center; font-size:18px;
+    }
+    .hor-item-lbl { font-size:.62rem; letter-spacing:.15em; text-transform:uppercase; color:var(--gray); margin-bottom:5px; }
+    .hor-item-val { font-size:.94rem; color:var(--white); font-weight:500; }
+    .hor-item-val a:hover { color:var(--gold); }
+
+    /* Google Maps */
+    .map-wrap {
+      margin-top:28px; border-radius:var(--radius); overflow:hidden;
+      border:1px solid rgba(201,168,76,.12);
+    }
+    .map-wrap iframe { width:100%; height:230px; border:0; filter:grayscale(1) brightness(.75) contrast(1.1); transition:filter .4s; }
+    .map-wrap:hover iframe { filter:grayscale(.3) brightness(.85) contrast(1.05); }
+
+    /* ============================================================
+       AGENDAMENTO
+    ============================================================ */
+    #contato { background:var(--black); position:relative; overflow:hidden; }
+    #contato::after {
+      content:''; position:absolute; top:-180px; right:-180px;
+      width:560px; height:560px; border-radius:50%;
+      background:radial-gradient(circle,rgba(201,168,76,.05) 0%,transparent 70%);
+      pointer-events:none;
+    }
+    .ctt-grid { display:grid; grid-template-columns:1fr 1.08fr; gap:72px; align-items:start; }
+
+    .ctt-quote {
+      font-family:'Playfair Display',serif;
+      font-size:1.4rem; font-style:italic;
+      color:var(--white2); line-height:1.65;
+      border-left:2px solid var(--gold); padding-left:22px;
+      margin:28px 0 36px;
+    }
+
+    .ctt-items { display:flex; flex-direction:column; gap:16px; }
+    .ctt-item {
+      display:flex; gap:14px; align-items:center;
+      padding:16px 20px;
+      background:var(--dark2); border:1px solid rgba(255,255,255,.04);
+      border-radius:var(--radius); transition:border-color .3s;
+    }
+    .ctt-item:hover { border-color:rgba(201,168,76,.2); }
+    .ctt-ico {
+      width:42px; height:42px; flex-shrink:0;
+      background:var(--gold-dim); border-radius:var(--radius);
+      display:flex; align-items:center; justify-content:center; font-size:1.2rem;
+    }
+    .ctt-lbl { font-size:.62rem; text-transform:uppercase; letter-spacing:.12em; color:var(--gray); margin-bottom:3px; }
+    .ctt-val { font-size:.9rem; color:var(--white); font-weight:500; }
+    .ctt-val a:hover { color:var(--gold); }
+
+    /* form */
+    .form-box {
+      background:var(--dark2); border:1px solid rgba(201,168,76,.1);
+      padding:44px; border-radius:var(--radius); position:relative; z-index:1;
+    }
+    .form-box-title { font-family:'Playfair Display',serif; font-size:1.5rem; font-weight:700; color:var(--white); margin-bottom:28px; }
+
+    .frow { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+    .fg { margin-bottom:18px; }
+    .fg label {
+      display:block; font-size:.67rem; letter-spacing:.12em;
+      text-transform:uppercase; color:var(--gray); font-weight:500; margin-bottom:7px;
+    }
+    .fg input, .fg select, .fg textarea {
+      width:100%; background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.08); border-radius:var(--radius);
+      padding:11px 14px; color:var(--white);
+      font-family:'Outfit',sans-serif; font-size:.88rem;
+      outline:none; transition:border-color .3s, background .3s; appearance:none;
+    }
+    .fg select {
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23c9a84c' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+      background-repeat:no-repeat; background-position:right 14px center; padding-right:38px;
+    }
+    .fg select option { background:var(--dark2); }
+    .fg input:focus, .fg select:focus, .fg textarea:focus {
+      border-color:var(--gold); background:rgba(201,168,76,.04);
+    }
+    .fg input::placeholder, .fg textarea::placeholder { color:var(--gray2); }
+    .fg textarea { resize:vertical; min-height:96px; }
+
+    #successMsg, #errorMsg {
+      display:none; padding:13px 16px; border-radius:var(--radius);
+      font-size:.83rem; margin-bottom:18px;
+    }
+    #successMsg { background:rgba(0,100,50,.14); border:1px solid rgba(62,207,110,.3); color:#5de08a; }
+    #errorMsg   { background:rgba(139,26,26,.14); border:1px solid rgba(200,50,50,.3);  color:#e08080; }
+    #successMsg.show, #errorMsg.show { display:block; }
+
+    .btn-submit {
+      width:100%; background:var(--gold); color:var(--black);
+      padding:14px; font-family:'Outfit',sans-serif;
+      font-size:.78rem; font-weight:700; letter-spacing:.15em; text-transform:uppercase;
+      border-radius:var(--radius);
+      transition:background .3s, transform .2s, box-shadow .3s;
+      box-shadow:0 4px 18px rgba(201,168,76,.25);
+    }
+    .btn-submit:hover { background:var(--gold-lt); transform:translateY(-1px); box-shadow:0 7px 26px rgba(201,168,76,.34); }
+    .btn-submit:disabled { background:var(--gray2); transform:none; box-shadow:none; cursor:not-allowed; }
+
+    .form-lgpd {
+      font-size:.68rem; color:var(--gray2); margin-top:14px; line-height:1.55; text-align:center;
+    }
+    .form-lgpd a { color:var(--gold); text-decoration:underline; cursor:pointer; }
+
+    /* ============================================================
+       FOOTER
+    ============================================================ */
+    footer {
+      background:var(--dark); border-top:1px solid rgba(255,255,255,.05);
+      padding:48px 7%;
+      display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:20px;
+    }
+    .foot-brand { display:flex; align-items:center; gap:12px; }
+    .foot-ico {
+      width:34px; height:34px; border-radius:50%;
+      border:1px solid var(--gold);
+      display:flex; align-items:center; justify-content:center; font-size:15px; color:var(--gold);
+    }
+    .foot-name { font-family:'Playfair Display',serif; font-size:.95rem; font-weight:700; color:var(--white2); }
+    .foot-copy { font-size:.68rem; color:var(--gray2); text-align:center; line-height:1.6; }
+    .foot-right { display:flex; justify-content:flex-end; }
+    .foot-line { width:70px; height:1px; background:linear-gradient(90deg,transparent,var(--gold),transparent); }
+
+    /* ============================================================
+       WHATSAPP BUTTON
+    ============================================================ */
+    #waBtn {
+      position:fixed; right:28px; bottom:96px; z-index:9998;
+      width:52px; height:52px; border-radius:50%;
+      background:#25D366; color:#fff;
+      display:flex; align-items:center; justify-content:center;
+      font-size:26px; box-shadow:0 4px 18px rgba(37,211,102,.4);
+      transition:transform .3s, box-shadow .3s;
+    }
+    #waBtn:hover { transform:scale(1.1); box-shadow:0 8px 28px rgba(37,211,102,.55); }
+    #waBtn svg { width:28px; height:28px; fill:#fff; }
+
+    /* ============================================================
+       CHATBOT
+    ============================================================ */
+    #chatBtn {
+      position:fixed; right:28px; bottom:28px; z-index:9999;
+      width:52px; height:52px; border-radius:50%;
+      background:var(--gold); color:var(--black);
+      display:flex; align-items:center; justify-content:center;
+      font-size:22px; box-shadow:0 4px 18px rgba(201,168,76,.4);
+      transition:transform .3s, box-shadow .3s;
+      animation:pulse 3s ease-in-out 4s infinite;
+    }
+    #chatBtn:hover { transform:scale(1.09); box-shadow:0 8px 28px rgba(201,168,76,.55); animation:none; }
+
+    @keyframes pulse {
+      0%,100% { box-shadow:0 4px 18px rgba(201,168,76,.4); }
+      50%      { box-shadow:0 4px 32px rgba(201,168,76,.75), 0 0 0 8px rgba(201,168,76,.12); }
+    }
+
+    #chatPanel {
+      position:fixed; right:28px; bottom:90px; z-index:9999;
+      width:330px; max-height:450px;
+      background:var(--dark2); border:1px solid rgba(201,168,76,.2);
+      border-radius:6px; box-shadow:0 18px 52px rgba(0,0,0,.62);
+      flex-direction:column; display:none;
+    }
+    #chatPanel.open { display:flex; animation:slideUp .28s ease; }
+    @keyframes slideUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+
+    .chat-hd {
+      background:linear-gradient(135deg,#1c1c1c,#222);
+      border-bottom:1px solid rgba(201,168,76,.18);
+      padding:13px 16px; display:flex; align-items:center; gap:10px; cursor:pointer;
+    }
+    .chat-hd-ico {
+      width:30px; height:30px; border-radius:50%;
+      background:var(--gold); color:var(--black);
+      display:flex; align-items:center; justify-content:center; font-size:13px; flex-shrink:0;
+    }
+    .chat-hd-name { font-size:.83rem; font-weight:600; color:var(--white); }
+    .chat-hd-status { font-size:.62rem; color:var(--green); }
+    .chat-hd-close { margin-left:auto; color:var(--gray); font-size:.75rem; }
+
+    .chat-msgs { padding:14px; overflow-y:auto; flex:1; display:flex; flex-direction:column; gap:9px; }
+    .msg { display:flex; }
+    .msg.u { justify-content:flex-end; }
+    .bubble {
+      max-width:83%; padding:9px 13px; border-radius:2px;
+      font-size:.81rem; line-height:1.5;
+    }
+    .bubble.b { background:rgba(255,255,255,.06); color:var(--white2); border:1px solid rgba(255,255,255,.06); border-radius:2px 10px 10px 10px; }
+    .bubble.u { background:var(--gold); color:var(--black); font-weight:500; border-radius:10px 2px 10px 10px; }
+
+    .qbtns { display:flex; gap:5px; flex-wrap:wrap; margin-top:3px; }
+    .qbtns button {
+      background:transparent; border:1px solid rgba(201,168,76,.3); color:var(--gold);
+      padding:4px 11px; border-radius:16px; font-size:.73rem;
+      font-family:'Outfit',sans-serif; transition:background .2s,color .2s;
+    }
+    .qbtns button:hover { background:var(--gold); color:var(--black); }
+
+    .chat-inp-area { padding:10px 13px; border-top:1px solid rgba(255,255,255,.05); display:flex; gap:7px; }
+    .chat-inp {
+      flex:1; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.08);
+      border-radius:var(--radius); padding:8px 11px; color:var(--white);
+      font-family:'Outfit',sans-serif; font-size:.81rem; outline:none; transition:border-color .3s;
+    }
+    .chat-inp:focus { border-color:var(--gold); }
+    .chat-inp::placeholder { color:var(--gray2); }
+    .chat-send {
+      background:var(--gold); color:var(--black);
+      padding:8px 14px; border-radius:var(--radius);
+      font-size:.78rem; font-weight:700; font-family:'Outfit',sans-serif;
+      transition:background .2s;
+    }
+    .chat-send:hover { background:var(--gold-lt); }
+
+    /* ============================================================
+       PRIVACY MODAL
+    ============================================================ */
+    #privModal {
+      display:none; position:fixed; inset:0; z-index:10000;
+      background:rgba(0,0,0,.78); align-items:center; justify-content:center; padding:20px;
+    }
+    #privModal.open { display:flex; }
+    .priv-box {
+      background:var(--dark2); border:1px solid rgba(201,168,76,.15);
+      border-radius:var(--radius); max-width:580px; width:100%;
+      max-height:82vh; overflow-y:auto; padding:40px;
+    }
+    .priv-title {
+      font-family:'Playfair Display',serif; font-size:1.5rem; font-weight:700;
+      color:var(--white); margin-bottom:6px;
+    }
+    .priv-sub { font-size:.72rem; color:var(--gray); margin-bottom:24px; }
+    .priv-box h3 { font-size:.9rem; color:var(--gold); margin:20px 0 8px; }
+    .priv-box p  { font-size:.82rem; color:var(--white2); line-height:1.75; }
+    .priv-close {
+      display:block; width:100%; margin-top:28px;
+      background:var(--gold); color:var(--black);
+      padding:12px; border-radius:var(--radius);
+      font-weight:700; font-size:.8rem; letter-spacing:.1em; text-transform:uppercase;
+      text-align:center;
+    }
+
+    /* ============================================================
+       RESPONSIVE
+    ============================================================ */
+    @media (max-width:1024px) {
+      .sobre-grid  { gap:48px; }
+      .ctt-grid    { gap:48px; }
+      .hor-grid    { gap:48px; }
+    }
+
+    @media (max-width:860px) {
+      .nav-links { display:none !important; }
+      .ham { display:flex; }
+
+      .sobre-grid  { grid-template-columns:1fr; gap:36px; }
+      .sobre-accent, .sobre-badge-box { display:none; }
+      .sobre-main { aspect-ratio:16/9; }
+      .sobre-feats { grid-template-columns:1fr; }
+
+      .serv-grid { grid-template-columns:1fr 1fr; }
+
+      .gal-layout { grid-template-columns:1fr; }
+      .car-main .car-track img, .car-side .car-track img { height:260px; }
+
+      .dep-grid { grid-template-columns:1fr; }
+
+      .hor-grid { grid-template-columns:1fr; }
+      .ctt-grid { grid-template-columns:1fr; }
+
+      .hero-stats { display:none; }
+      footer { grid-template-columns:1fr; text-align:center; }
+      .foot-right { justify-content:center; }
+      .frow { grid-template-columns:1fr; }
+      .form-box { padding:28px 22px; }
+    }
+
+    @media (max-width:540px) {
+      .section { padding:64px 5%; }
+      .serv-grid { grid-template-columns:1fr; }
+      .sec-title { font-size:1.75rem; }
+      .hero-title { font-size:2.2rem; }
+      #chatPanel { width:calc(100vw - 28px); right:14px; }
+      #chatBtn, #waBtn { right:18px; }
+      #chatBtn { bottom:20px; }
+      #waBtn { bottom:82px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ============================================================
+     NAVBAR
+============================================================ -->
+<nav id="navbar">
+  <a href="#home" class="nav-brand">
+    <div class="nav-brand-icon">✂</div>
+    <div class="nav-brand-name">
+      Barbearia Pai e Filho
+      <span class="nav-brand-sub">Tradição &amp; Estilo</span>
+    </div>
+  </a>
+
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#sobre">Sobre</a></li>
+    <li><a href="#servicos">Serviços</a></li>
+    <li><a href="#salao">Salão</a></li>
+    <li><a href="#horario">Horários</a></li>
+    <li><a href="#depoimentos">Avaliações</a></li>
+    <li><a href="#contato" class="nav-cta">Agendar</a></li>
+  </ul>
+
+  <button class="ham" id="ham" aria-label="Menu" onclick="toggleHam()">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- Mobile drawer -->
+<div class="nav-drawer" id="navDrawer">
+  <a href="#sobre"        onclick="closeDrawer()">Sobre</a>
+  <a href="#servicos"     onclick="closeDrawer()">Serviços</a>
+  <a href="#salao"        onclick="closeDrawer()">Salão</a>
+  <a href="#horario"      onclick="closeDrawer()">Horários</a>
+  <a href="#depoimentos"  onclick="closeDrawer()">Avaliações</a>
+  <a href="#contato" class="drawer-cta" onclick="closeDrawer()">Agendar Horário</a>
+</div>
+
+<!-- ============================================================
+     HERO
+============================================================ -->
+<section id="home">
+  <div class="hero-bg"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-badge"><span>Tradição que se renova a cada corte</span></div>
+    <h1 class="hero-title">Arte e <em>Precisão</em><br>em cada corte</h1>
+    <p class="hero-sub">Na Barbearia Pai e Filho, cada visita é uma experiência. Cortes impecáveis, ambiente acolhedor e o cuidado de quem te trata como família.</p>
+    <div class="hero-actions">
+      <a href="#contato" class="btn-gold">Agendar Horário</a>
+      <a href="#salao"   class="btn-ghost">Ver o Salão</a>
+    </div>
+  </div>
+  <div class="hero-scroll-hint"><span>Rolar para baixo</span></div>
+  <div class="hero-stats">
+    <div class="h-stat"><div class="h-stat-n">2</div><div class="h-stat-l">Barbeiros</div></div>
+    <div class="h-stat"><div class="h-stat-n">6×</div><div class="h-stat-l">Dias por semana</div></div>
+    <div class="h-stat"><div class="h-stat-n">5★</div><div class="h-stat-l">Atendimento</div></div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SOBRE
+============================================================ -->
+<section id="sobre" class="section">
+  <div class="sobre-grid">
+    <div class="sobre-imgs reveal">
+      <img src="ImagensBarbearia/DentroSalao1.jpg" alt="Interior da barbearia" class="sobre-main" loading="lazy">
+      <img src="ImagensBarbearia/BarbeariaFora1.jpg" alt="Fachada da barbearia" class="sobre-accent" loading="lazy">
+      <div class="sobre-badge-box">
+        <div class="sobre-badge-n">✂</div>
+        <div class="sobre-badge-t">Pai &amp;<br>Filho</div>
+      </div>
+    </div>
+
+    <div class="reveal reveal-d1">
+      <div class="eyebrow">Nossa história</div>
+      <h2 class="sec-title">Uma barbearia feita com <em>amor</em></h2>
+      <div class="gold-bar"></div>
+      <p class="sec-desc">A Barbearia Pai e Filho nasceu da paixão pelo ofício e do desejo de oferecer mais do que um corte — oferecemos uma experiência. Em um ambiente moderno, acolhedor e climatizado, pai e filho trabalham lado a lado para garantir o melhor resultado para cada cliente.</p>
+      <div class="sobre-feats">
+        <div class="feat"><div class="feat-icon">✂</div><div><h4>Barbeiros Experientes</h4><p>Técnica apurada e atenção a cada detalhe.</p></div></div>
+        <div class="feat"><div class="feat-icon">🏆</div><div><h4>Qualidade Garantida</h4><p>Produtos e equipamentos profissionais.</p></div></div>
+        <div class="feat"><div class="feat-icon">❄️</div><div><h4>Ambiente Climatizado</h4><p>Conforto em todas as estações do ano.</p></div></div>
+        <div class="feat"><div class="feat-icon">📅</div><div><h4>Agendamento Fácil</h4><p>Reserve seu horário online sem complicação.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SERVIÇOS
+============================================================ -->
+<section id="servicos" class="section">
+  <div class="eyebrow reveal">O que oferecemos</div>
+  <h2 class="sec-title reveal reveal-d1">Nossos <em>Serviços</em></h2>
+
+  <div class="serv-grid" style="margin-top:52px">
+
+    <div class="serv-card">
+      <div class="serv-num">01</div>
+      <div class="serv-ico">✂</div>
+      <div class="serv-name">Corte Clássico</div>
+      <p class="serv-desc">O clássico que nunca sai de moda. Tesoura, máquina e acabamento impecável para um visual elegante e atemporal.</p>
+      <div class="serv-price"><span class="serv-from">A partir de</span><span class="serv-val">R$ 20</span></div>
+    </div>
+
+    <div class="serv-card">
+      <div class="serv-num">02</div>
+      <div class="serv-ico">⚡</div>
+      <div class="serv-name">Fade &amp; Degradê</div>
+      <p class="serv-desc">Transições suaves e precisas do mais curto ao mais longo. Técnica avançada para um estilo moderno e arrojado.</p>
+      <div class="serv-price"><span class="serv-from">A partir de</span><span class="serv-val">R$ 25</span></div>
+    </div>
+
+    <div class="serv-card">
+      <div class="serv-num">03</div>
+      <div class="serv-ico">🪒</div>
+      <div class="serv-name">Barba &amp; Bigode</div>
+      <p class="serv-desc">Modelagem, alinhamento e acabamento que realçam sua personalidade. Sua barba merece atenção especial.</p>
+      <div class="serv-price"><span class="serv-from">A partir de</span><span class="serv-val">R$ 20</span></div>
+    </div>
+
+    <div class="serv-card">
+      <div class="serv-num">04</div>
+      <div class="serv-ico">💈</div>
+      <div class="serv-name">Cabelo + Barba</div>
+      <p class="serv-desc">O combo completo para quem quer sair renovado de cima a baixo, com visual coeso e impecável.</p>
+      <div class="serv-price"><span class="serv-from">Combo por</span><span class="serv-val">R$ 40</span></div>
+    </div>
+
+    <div class="serv-card">
+      <div class="serv-num">05</div>
+      <div class="serv-ico">👁</div>
+      <div class="serv-name">Sobrancelha</div>
+      <p class="serv-desc">Definição e cuidado que fazem toda a diferença na expressão do seu rosto. Detalhe que transforma o visual.</p>
+      <div class="serv-price"><span class="serv-from">A partir de</span><span class="serv-val">R$ 5</span></div>
+    </div>
+
+    <div class="serv-card serv-cta-card">
+      <div>
+        <div style="font-size:2.2rem;margin-bottom:14px">💬</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.15rem;color:var(--white);margin-bottom:8px">Dúvidas?</div>
+        <p style="font-size:.8rem;color:var(--gray);margin-bottom:20px">Use o chat ou agende diretamente pelo formulário abaixo.</p>
+        <a href="#contato" class="btn-gold" style="font-size:.74rem;padding:10px 22px">Agendar Agora</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================
+     GALERIA
+============================================================ -->
+<section id="salao" class="section">
+  <div class="eyebrow reveal">Conheça o espaço</div>
+  <h2 class="sec-title reveal reveal-d1">Nosso <em>Salão</em></h2>
+  <p class="sec-desc reveal reveal-d2">Um ambiente pensado para o seu conforto, com estrutura completa e toda a comodidade que você merece.</p>
+
+  <div class="gal-layout" style="margin-top:48px">
+
+    <!-- Fachada -->
+    <div class="car-wrap reveal">
+      <div class="car-label">Fachada</div>
+      <div class="carousel car-main" id="cExt">
+        <div class="car-track" id="tExt">
+          <img src="ImagensBarbearia/BarbeariaFora1.jpg" alt="Fachada 1" loading="lazy">
+          <img src="ImagensBarbearia/BarbeariaFora2.jpg" alt="Fachada 2" loading="lazy">
+          <img src="ImagensBarbearia/BarbeariaFora3.jpg" alt="Fachada 3" loading="lazy">
+        </div>
+        <div class="car-dots" id="dExt"></div>
+        <div class="car-ctrls">
+          <button class="car-btn" onclick="prev('Ext')">&#8592;</button>
+          <button class="car-btn" onclick="next('Ext')">&#8594;</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Interior + info -->
+    <div class="gal-col">
+      <div class="car-wrap reveal reveal-d1">
+        <div class="car-label">Interior</div>
+        <div class="carousel car-side" id="cInt">
+          <div class="car-track" id="tInt">
+            <img src="ImagensBarbearia/DentroSalao1.jpg" alt="Interior 1" loading="lazy">
+            <img src="ImagensBarbearia/DentroSalao2.jpg" alt="Interior 2" loading="lazy">
+            <img src="ImagensBarbearia/DentroSalao3.jpg" alt="Interior 3" loading="lazy">
+          </div>
+          <div class="car-dots" id="dInt"></div>
+          <div class="car-ctrls">
+            <button class="car-btn" onclick="prev('Int')">&#8592;</button>
+            <button class="car-btn" onclick="next('Int')">&#8594;</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="gal-info reveal reveal-d2">
+        <div class="gal-info-ico">❄️</div>
+        <div>
+          <div class="gal-info-title">Ambiente Climatizado</div>
+          <div class="gal-info-text">Conforto em todas as estações, enquanto você aguarda ou é atendido com toda a atenção que merece.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================
+     DEPOIMENTOS
+============================================================ -->
+<section id="depoimentos" class="section">
+  <div class="eyebrow reveal">O que dizem nossos clientes</div>
+  <h2 class="sec-title reveal reveal-d1">Avaliações &amp; <em>Depoimentos</em></h2>
+
+  <div class="dep-grid" style="margin-top:48px">
+
+    <div class="dep-card reveal">
+      <div class="dep-stars">★★★★★</div>
+      <p class="dep-text">"Melhor barbearia da cidade! Sempre saio satisfeito, o atendimento é excelente e o corte fica impecável. Virei cliente fiel!"</p>
+      <div class="dep-author">
+        <div class="dep-avatar">👨</div>
+        <div>
+          <div class="dep-name">Carlos M.</div>
+          <div class="dep-since">Cliente desde 2022</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dep-card reveal reveal-d1">
+      <div class="dep-stars">★★★★★</div>
+      <p class="dep-text">"Ambiente super agradável, equipe atenciosa e o resultado supera as expectativas. Recomendo muito para todos os amigos!"</p>
+      <div class="dep-author">
+        <div class="dep-avatar">👦</div>
+        <div>
+          <div class="dep-name">Rafael S.</div>
+          <div class="dep-since">Cliente desde 2023</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dep-card reveal reveal-d2">
+      <div class="dep-stars">★★★★★</div>
+      <p class="dep-text">"Pai e filho são demais! Profissionais de verdade. O degradê ficou perfeito e o preço é muito justo. Vale cada centavo."</p>
+      <div class="dep-author">
+        <div class="dep-avatar">🧔</div>
+        <div>
+          <div class="dep-name">Lucas A.</div>
+          <div class="dep-since">Cliente desde 2021</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="dep-google reveal" style="margin-top:28px">
+    <div class="dep-google-logo">🌐</div>
+    <div class="dep-google-text">
+      Nota no Google: <strong>5,0</strong> &nbsp;
+      <span class="dep-google-stars">★★★★★</span>
+      &nbsp; · &nbsp; Avalie-nos também e ajude outros clientes a nos encontrar!
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     HORÁRIOS
+============================================================ -->
+<section id="horario" class="section">
+  <div class="hor-grid">
+
+    <div class="reveal">
+      <div class="eyebrow">Funcionamento</div>
+      <h2 class="sec-title"><em>Horários</em> de atendimento</h2>
+      <div class="gold-bar"></div>
+      <p class="sec-desc">Estamos prontos para te receber de segunda a sábado. Agende com antecedência para garantir seu horário preferido.</p>
+
+      <div class="hor-info" style="margin-top:32px">
+        <div class="hor-item">
+          <div class="hor-item-ico">📍</div>
+          <div>
+            <div class="hor-item-lbl">Endereço</div>
+            <div class="hor-item-val">Consulte pelo WhatsApp</div>
+          </div>
+        </div>
+        <div class="hor-item">
+          <div class="hor-item-ico">📞</div>
+          <div>
+            <div class="hor-item-lbl">Telefone / WhatsApp</div>
+            <div class="hor-item-val"><a href="tel:+5500000000000">(XX) 99999-9999</a></div>
+          </div>
+        </div>
+        <div class="hor-item">
+          <div class="hor-item-ico">✉️</div>
+          <div>
+            <div class="hor-item-lbl">E-mail</div>
+            <div class="hor-item-val"><a href="mailto:contato@paiefilho.com.br">contato@paiefilho.com.br</a></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Google Maps -->
+      <div class="map-wrap" style="margin-top:28px">
+        <!--
+          INSTRUÇÃO: Substitua o src do iframe abaixo pelo link do Google Maps da sua barbearia.
+          Para obter: abra o Google Maps → pesquise seu endereço → clique em "Compartilhar" → "Incorporar mapa" → copie o src do iframe.
+        -->
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d235.89641987234967!2d-48.20726902996509!3d-18.916218558252055!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94a44fb720ca140d%3A0x72d3f4d62289a339!2sRua%20Das%20Maca%C3%BAbas%2C%20235%20-%20Res.%20Integra%C3%A7%C3%A3o%2C%20Uberl%C3%A2ndia%20-%20MG%2C%2038407-613!5e0!3m2!1spt-BR!2sbr!4v1779038322631!5m2!1spt-BR!2sbr" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+          allowfullscreen loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          title="Localização da Barbearia Pai e Filho">
+        </iframe>
+      </div>
+    </div>
+
+    <div class="hor-table reveal reveal-d1">
+      <div class="hor-row"><span class="hor-day">Segunda-feira</span><span class="hor-time">08:00 – 19:00</span></div>
+      <div class="hor-row"><span class="hor-day">Terça-feira</span><span class="hor-time">08:00 – 19:00</span></div>
+      <div class="hor-row"><span class="hor-day">Quarta-feira</span><span class="hor-time">08:00 – 19:00</span></div>
+      <div class="hor-row"><span class="hor-day">Quinta-feira</span><span class="hor-time">08:00 – 19:00</span></div>
+      <div class="hor-row"><span class="hor-day">Sexta-feira</span><span class="hor-time">08:00 – 19:00</span></div>
+      <div class="hor-row sat"><span class="hor-day" style="color:var(--gold)">Sábado</span><span class="hor-time">06:30 – 18:30</span></div>
+      <div class="hor-row"><span class="hor-day">Domingo</span><span class="hor-closed">Fechado</span></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================
+     AGENDAMENTO
+============================================================ -->
+<section id="contato" class="section">
+  <div class="ctt-grid">
+
+    <div class="reveal">
+      <div class="eyebrow">Marque seu horário</div>
+      <h2 class="sec-title">Agende sua <em>visita</em></h2>
+      <div class="gold-bar"></div>
+      <blockquote class="ctt-quote">"Saia sempre no seu melhor. Nós cuidamos do resto."</blockquote>
+      <div class="ctt-items">
+        <div class="ctt-item">
+          <div class="ctt-ico">📞</div>
+          <div><div class="ctt-lbl">WhatsApp</div><div class="ctt-val"><a href="https://wa.me/5500000000000" target="_blank">(XX) 99999-9999</a></div></div>
+        </div>
+        <div class="ctt-item">
+          <div class="ctt-ico">✉️</div>
+          <div><div class="ctt-lbl">E-mail</div><div class="ctt-val"><a href="mailto:contato@paiefilho.com.br">contato@paiefilho.com.br</a></div></div>
+        </div>
+        <div class="ctt-item">
+          <div class="ctt-ico">🕐</div>
+          <div><div class="ctt-lbl">Atendimento</div><div class="ctt-val">Seg–Sex: 8h–19h · Sáb: 6h30–18h30</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-box reveal reveal-d1">
+      <div class="form-box-title">Preencha o formulário</div>
+
+      <div id="successMsg"></div>
+      <div id="errorMsg"></div>
+
+      <form id="agForm">
+        <div class="frow">
+          <div class="fg">
+            <label for="nome">Nome *</label>
+            <input type="text" id="nome" name="nome" placeholder="Seu nome completo" required>
+          </div>
+          <div class="fg">
+            <label for="telefone">Telefone *</label>
+            <input type="tel" id="telefone" name="telefone" placeholder="(XX) 9XXXX-XXXX" required>
+          </div>
+        </div>
+        <div class="fg">
+          <label for="email">E-mail *</label>
+          <input type="email" id="email" name="email" placeholder="seu@email.com" required>
+        </div>
+        <div class="fg">
+          <label for="servico">Serviço *</label>
+          <select id="servico" name="servico" required>
+            <option value="">Selecione um serviço</option>
+            <option value="Corte Clássico — R$ 20">Corte Clássico — R$ 20</option>
+            <option value="Fade &amp; Degradê — R$ 25">Fade &amp; Degradê — R$ 25</option>
+            <option value="Barba &amp; Bigode — R$ 20">Barba &amp; Bigode — R$ 20</option>
+            <option value="Cabelo + Barba — R$ 40">Cabelo + Barba — R$ 40</option>
+            <option value="Sobrancelha — R$ 5">Sobrancelha — R$ 5</option>
+            <option value="Outros">Outros</option>
+          </select>
+        </div>
+        <div class="frow">
+          <div class="fg">
+            <label for="data">Data *</label>
+            <input type="date" id="data" name="data" required>
+          </div>
+          <div class="fg">
+            <label for="hora">Hora *</label>
+            <input type="time" id="hora" name="hora" required>
+          </div>
+        </div>
+        <div class="fg">
+          <label for="mensagem">Observações</label>
+          <textarea id="mensagem" name="mensagem" placeholder="Alguma preferência ou detalhe sobre o corte..."></textarea>
+        </div>
+        <button type="submit" class="btn-submit" id="submitBtn">Confirmar Agendamento</button>
+        <p class="form-lgpd">
+          Ao enviar, você concorda com nossa
+          <a onclick="openPriv()">Política de Privacidade</a>.
+          Seus dados são usados apenas para contato e agendamento.
+        </p>
+      </form>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================
+     FOOTER
+============================================================ -->
+<footer>
+  <div class="foot-brand">
+    <div class="foot-ico">✂</div>
+    <div class="foot-name">Barbearia Pai e Filho</div>
+  </div>
+  <div class="foot-copy">
+    &copy; 2025 Barbearia Pai e Filho. Todos os direitos reservados.<br>
+    <a onclick="openPriv()" style="color:var(--gold);text-decoration:underline;cursor:pointer;font-size:.68rem">Política de Privacidade</a>
+  </div>
+  <div class="foot-right"><div class="foot-line"></div></div>
+</footer>
+
+<!-- ============================================================
+     WHATSAPP BUTTON
+============================================================ -->
+<a id="waBtn" href="https://wa.me/5500000000000" target="_blank" rel="noopener" aria-label="WhatsApp" title="Fale pelo WhatsApp">
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+    <path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.122 1.532 5.855L.057 23.854a.5.5 0 0 0 .612.612l6.074-1.458A11.942 11.942 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.9a9.877 9.877 0 0 1-5.031-1.373l-.36-.214-3.733.897.933-3.645-.235-.376A9.858 9.858 0 0 1 2.1 12C2.1 6.534 6.534 2.1 12 2.1S21.9 6.534 21.9 12 17.466 21.9 12 21.9z"/>
+  </svg>
+</a>
+
+<!-- ============================================================
+     CHATBOT
+============================================================ -->
+<div id="chatPanel">
+  <div class="chat-hd" id="chatHd">
+    <div class="chat-hd-ico">✂</div>
+    <div>
+      <div class="chat-hd-name">Barbearia Pai e Filho</div>
+      <div class="chat-hd-status">● Online agora</div>
+    </div>
+    <span class="chat-hd-close">✕</span>
+  </div>
+  <div class="chat-msgs" id="chatMsgs">
+    <div class="msg"><span class="bubble b">Olá! 👋 Posso informar preços e horários. Como posso ajudar?</span></div>
+    <div class="qbtns" id="qbtns">
+      <button data-q="preços">💈 Preços</button>
+      <button data-q="horário">🕐 Horários</button>
+    </div>
+  </div>
+  <div class="chat-inp-area">
+    <input id="chatInp" class="chat-inp" placeholder="Digite sua pergunta...">
+    <button id="chatSend" class="chat-send">Enviar</button>
+  </div>
+</div>
+
+<button id="chatBtn" aria-label="Chat" title="Falar conosco">✂</button>
+
+<!-- ============================================================
+     PRIVACY MODAL
+============================================================ -->
+<div id="privModal">
+  <div class="priv-box">
+    <div class="priv-title">Política de Privacidade</div>
+    <div class="priv-sub">Última atualização: novembro de 2025</div>
+
+    <h3>1. Quais dados coletamos</h3>
+    <p>Coletamos nome completo, e-mail, telefone e informações relacionadas ao agendamento (serviço, data e hora) exclusivamente para finalizar e confirmar sua visita.</p>
+
+    <h3>2. Como usamos seus dados</h3>
+    <p>Os dados fornecidos são utilizados apenas para confirmação de agendamentos e comunicação direta com você sobre o serviço solicitado. Não compartilhamos suas informações com terceiros.</p>
+
+    <h3>3. Armazenamento e segurança</h3>
+    <p>Seus dados são transmitidos de forma segura via EmailJS e não são armazenados em servidores próprios. Adotamos boas práticas para proteger suas informações.</p>
+
+    <h3>4. Seus direitos (LGPD)</h3>
+    <p>Conforme a Lei Geral de Proteção de Dados (Lei nº 13.709/2018), você tem direito a acessar, corrigir ou solicitar a exclusão dos seus dados a qualquer momento. Entre em contato pelo e-mail informado no site.</p>
+
+    <h3>5. Contato</h3>
+    <p>Dúvidas sobre esta política? Fale conosco: <strong>contato@paiefilho.com.br</strong></p>
+
+    <a class="priv-close" onclick="closePriv()">Entendi</a>
+  </div>
+</div>
+
+<!-- ============================================================
+     SCRIPTS
+============================================================ -->
+<script>
+/* ---- EmailJS ---- */
+const EJS_SVC = 'service_c639vg8';
+const EJS_TPL = 'template_xf4dbkj';
+const EJS_KEY = 'qL4kFDZKYNMN67yNe';
+try { if (typeof emailjs !== 'undefined') emailjs.init(EJS_KEY); } catch(e){}
+
+/* ---- Navbar scroll ---- */
+window.addEventListener('scroll', () => {
+  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 40);
+});
+
+/* ---- Hamburger ---- */
+function toggleHam() {
+  const h = document.getElementById('ham');
+  const d = document.getElementById('navDrawer');
+  h.classList.toggle('open');
+  d.classList.toggle('open');
+}
+function closeDrawer() {
+  document.getElementById('ham').classList.remove('open');
+  document.getElementById('navDrawer').classList.remove('open');
+}
+
+/* ---- Scroll reveal ---- */
+function doReveal() {
+  document.querySelectorAll('.reveal,.serv-card').forEach(el => {
+    if (el.getBoundingClientRect().top < window.innerHeight - 72)
+      el.classList.add('visible');
+  });
+}
+window.addEventListener('scroll', doReveal, { passive:true });
+doReveal();
+
+/* ---- Carousels ---- */
+const cars = {};
+function initCar(id) {
+  const track = document.getElementById('t' + id);
+  const imgs   = track.querySelectorAll('img');
+  const dots   = document.getElementById('d' + id);
+  let cur = 0;
+  imgs.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'car-dot' + (i === 0 ? ' on' : '');
+    d.onclick = () => go(i);
+    dots.appendChild(d);
+  });
+  function go(i) {
+    cur = (i + imgs.length) % imgs.length;
+    track.style.transform = `translateX(-${cur * 100}%)`;
+    dots.querySelectorAll('.car-dot').forEach((d, j) => d.classList.toggle('on', j === cur));
+  }
+  cars[id] = { go, cur: () => cur, len: () => imgs.length };
+}
+function next(id) { const c = cars[id]; c.go(c.cur() + 1); }
+function prev(id) { const c = cars[id]; c.go(c.cur() - 1); }
+
+initCar('Ext'); initCar('Int');
+setInterval(() => next('Ext'), 5000);
+setInterval(() => next('Int'), 4300);
+
+/* ---- Form ---- */
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('data').min = new Date().toISOString().split('T')[0];
+
+  document.getElementById('agForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const btn = document.getElementById('submitBtn');
+    const ok  = document.getElementById('successMsg');
+    const err = document.getElementById('errorMsg');
+    ok.classList.remove('show'); err.classList.remove('show');
+
+    const fd = {
+      nome:     document.getElementById('nome').value,
+      email:    document.getElementById('email').value,
+      telefone: document.getElementById('telefone').value,
+      servico:  document.getElementById('servico').value,
+      data:     document.getElementById('data').value,
+      hora:     document.getElementById('hora').value,
+      mensagem: document.getElementById('mensagem').value || 'Nenhuma observação.',
+    };
+
+    try {
+      if (!fd.nome||!fd.email||!fd.telefone||!fd.servico||!fd.data||!fd.hora)
+        throw new Error('Preencha todos os campos obrigatórios.');
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fd.email))
+        throw new Error('Insira um e-mail válido.');
+
+      btn.disabled = true; btn.textContent = 'Enviando…';
+      await emailjs.send(EJS_SVC, EJS_TPL, fd);
+      await new Promise(r => setTimeout(r, 600));
+
+      ok.textContent = '✓ Agendamento enviado! Você receberá uma confirmação por e-mail em breve.';
+      ok.classList.add('show');
+      document.getElementById('agForm').reset();
+      setTimeout(() => ok.classList.remove('show'), 7000);
+    } catch(ex) {
+      err.textContent = '✗ ' + (ex.message || 'Erro ao enviar. Tente novamente.');
+      err.classList.add('show');
+      setTimeout(() => err.classList.remove('show'), 5500);
+    } finally {
+      btn.disabled = false; btn.textContent = 'Confirmar Agendamento';
+    }
+  });
+});
+
+/* ---- Chatbot ---- */
+(function(){
+  const kb = {
+    precos:  '💈 Nossos preços:\n✂ Corte Clássico — R$ 20\n⚡ Fade / Degradê — R$ 25\n🪒 Barba & Bigode — R$ 20\n💈 Cabelo + Barba — R$ 40\n👁 Sobrancelha — R$ 5',
+    horario: '🕐 Horários de funcionamento:\nSeg a Sex: 08h00 – 19h00\nSábado: 06h30 – 18h30\nDomingo: Fechado'
+  };
+  const panel  = document.getElementById('chatPanel');
+  const msgs   = document.getElementById('chatMsgs');
+  const inp    = document.getElementById('chatInp');
+
+  document.getElementById('chatBtn').onclick = () => panel.classList.toggle('open');
+  document.getElementById('chatHd').onclick  = () => panel.classList.remove('open');
+
+  function addMsg(txt, from) {
+    const w = document.createElement('div');
+    w.className = 'msg ' + (from === 'u' ? 'u' : '');
+    const b = document.createElement('span');
+    b.className = 'bubble ' + from; b.textContent = txt;
+    w.appendChild(b); msgs.appendChild(w);
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  function reply(q) {
+    const s = q.toLowerCase();
+    if (/preç|valor|quanto|custa|corte|barba|serviç/.test(s)) return kb.precos;
+    if (/horár|hora|funcionamento|aberto|fecha/.test(s)) return kb.horario;
+    return 'Posso informar sobre 💈 preços e 🕐 horários. Use os botões ou pergunte diretamente!';
+  }
+
+  function send() {
+    const t = inp.value.trim(); if (!t) return;
+    addMsg(t, 'u'); inp.value = '';
+    setTimeout(() => addMsg(reply(t), 'b'), 300);
+  }
+
+  document.getElementById('chatSend').onclick = send;
+  inp.addEventListener('keydown', e => { if (e.key === 'Enter') send(); });
+  document.getElementById('qbtns').addEventListener('click', e => {
+    if (e.target.tagName === 'BUTTON') {
+      const q = e.target.dataset.q;
+      addMsg(q, 'u');
+      setTimeout(() => addMsg(reply(q), 'b'), 280);
+    }
+  });
+})();
+
+/* ---- Privacy modal ---- */
+function openPriv()  { document.getElementById('privModal').classList.add('open');    document.body.style.overflow='hidden'; }
+function closePriv() { document.getElementById('privModal').classList.remove('open'); document.body.style.overflow=''; }
+document.getElementById('privModal').addEventListener('click', e => { if (e.target === e.currentTarget) closePriv(); });
+</script>
+
+</body>
+</html>
